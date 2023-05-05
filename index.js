@@ -1,7 +1,6 @@
 //import
 const express = require("express");
 const app = express();
-const { engine } = require("express-handlebars");
 require("dotenv").config();
 const mongoose = require("mongoose");
 
@@ -23,11 +22,6 @@ try {
 }
 //use static file
 app.use(express.static("./public"));
-
-//use handlebars view engine
-app.engine(".hbs", engine({ extname: ".hbs" }));
-app.set("view engine", ".hbs");
-app.set("views", "./views");
 
 //helper
 function getHash(input) {
