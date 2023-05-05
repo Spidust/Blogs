@@ -1,0 +1,26 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Blog</title>
+    <link rel="stylesheet" href="/styles/index.css" />
+    <link rel="stylesheet" href="/styles/BlogPage.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1></h1>
+      <div class="mt4"></div>
+    </div>
+
+    <script>
+      function renderBlog(blog) {
+        document.querySelector("h1").textContent = blog.title;
+        document.querySelector(".container").innerHTML += blog.content;
+      }
+      fetch("/blog/" + window.location.href.split("/")[3])
+        .then((data) => data.json())
+        .then((data) => renderBlog(data.data));
+    </script>
+  </body>
+</html>

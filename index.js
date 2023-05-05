@@ -6,11 +6,11 @@ require("dotenv").config();
 const mongoose = require("mongoose");
 
 //constant
-const PORT = process.env.PORT || 8080
+const PORT = process.env.PORT || 8080;
 
 //Showdown
 const showdown = require("showdown"),
-converter = new showdown.Converter();
+  converter = new showdown.Converter();
 
 //connect to database
 try {
@@ -56,6 +56,12 @@ const Blogs = new mongoose.model(
 //routing
 //[GET] / All: Index page
 app.get("/", async (req, res) => {
+  //render home
+  return res.sendFile(__dirname + "/views/home.html");
+});
+
+//[GET] /blogs All: get blogs data
+app.get("/blogs", async (req, res) => {
   let blogs;
   try {
     blogs = await Blogs.find({}).lean();
@@ -66,19 +72,26 @@ app.get("/", async (req, res) => {
       success: false,
     });
   }
-  //render home
-  return res.render("home", {
-    blogs,
-    layout: false,
+  if (blogs) {
+    return res.json({
+      success: true,
+      data: blogs,
+    });
+  }
+
+  return res.status(404).json({
+    success: false,
+    message: "404",
   });
 });
-//[GET] /:id All: blog view page
-app.get("/:id", async (req, res) => {
+
+//[GET] /blog/:id : get blog data
+app.get("/blog/:id", async (req, res) => {
   let blog;
   try {
     blog = await Blogs.findOne({ id: req.params.id });
-    if(!blog) {
-      return res.redirect("/")
+    if (!blog) {
+      return res.redirect("/");
     }
   } catch (e) {
     //error handle
@@ -86,15 +99,31 @@ app.get("/:id", async (req, res) => {
     return res.redirect("/");
   }
 
-  return res.render("blog", {
-    layout: false,
-    title: blog.title,
-    content: converter.makeHtml(blog.content),
+  return res.json({
+    success: true,
+    data: {
+      title: blog.title,
+      content: converter.makeHtml(blog.content),
+    },
   });
 });
 
+//[GET] /:id All: blog view page
+app.get("/:id", async (req, res) => {
+  let blog;
+  try {
+    blog = await Blogs.findOne({ id: req.params.id });
+    if (!blog) {
+      return res.redirect("/");
+    }
+  } catch (e) {
+    //error handle
+    //redirect to home page
+    return res.redirect("/");
+  }
+
+  return res.sendFile(__dirname + "/views/blog.html");
+});
 
 //app listen
-app.listen(PORT, () =>
-  console.log("App is running at port:", PORT)
-);
+app.listen(PORT, () => console.log("App is running at port:", PORT));

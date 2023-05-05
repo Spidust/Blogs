@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Blog</title>
+    <link rel="stylesheet" href="/styles/index.css" />
+    <link rel="stylesheet" href="/styles/HomePage.css" />
+  </head>
+  <body>
+    <div class="mt4"></div>
+    <div class="container">
+      <div class="avt">
+        <img src="/img/profile-image.jpg" alt="Profile image" />
+      </div>
+      <div class="prfile-title-group">
+        <div class="profile-title">Trần Hải Đăng</div>
+        <div class="profile-sub-title">
+          Thứ tôi cần là 日光, vì đèn phòng làm tôi đau mắt.
+        </div>
+      </div>
+      <div class="blogs"></div>
+    </div>
+
+    <script>
+      function renderBlogs(blogs) {
+        let finalData = "";
+        for (let i of blogs) {
+          finalData += `<a class="blog" href=${i.id}>
+          
+          <div class="blog-image">
+          <img src=${i.image} alt="" />
+        </div>
+
+        <div class="blog-text-group">
+          <div class="blog-title">
+            ${i.title}
+          </div>
+
+          <div class="blog-description">
+            ${i.description}
+          </div>
+        </div>
+      </a>`;
+        }
+        document.querySelector(".blogs").innerHTML = finalData;
+      }
+      fetch("/blogs")
+        .then((data) => data.json())
+        .then((data) => renderBlogs(data.data))
+        .catch((e) => console.log(e));
+    </script>
+  </body>
+</html>
